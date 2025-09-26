@@ -45,7 +45,7 @@ public class CivoObjectStorage {
      * @param userMeta    a map of user-defined metadata to associate with the object, can be null
      * @throws CivoObjectStorageException if an error occurs during the upload process
      */
-    public void putBytes(String key, byte[] bytes, String contentType, Map<String, String> userMeta) throws CivoObjectStorageException {
+    public ObjectWriteResponse putBytes(String key, byte[] bytes, String contentType, Map<String, String> userMeta) throws CivoObjectStorageException {
         try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
             PutObjectArgs.Builder b = PutObjectArgs.builder()
                     .bucket(bucket)
@@ -55,7 +55,7 @@ public class CivoObjectStorage {
             if (userMeta != null && !userMeta.isEmpty()) {
                 b.userMetadata(userMeta);
             }
-            minio.putObject(b.build());
+            return minio.putObject(b.build());
         } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
                  XmlParserException e) {
