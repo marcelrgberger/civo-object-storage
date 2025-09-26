@@ -29,13 +29,3 @@ jobs:
     secrets:
       deploy_github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
 
-  docker-build:
-    name: Docker Build and Push To Repository
-    needs: [ maven-build ]
-    uses: marcelrgberger/org-ci-config/.github/workflows/docker-build.yaml@main
-    with:
-      release: true
-      cache-key: ${{ needs.maven-build.outputs.cache-key }}
-    secrets:
-      registry_username: ${{ github.actor }}
-      registry_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
