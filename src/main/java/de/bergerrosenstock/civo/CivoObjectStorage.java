@@ -2,8 +2,6 @@ package de.bergerrosenstock.civo;
 
 import io.minio.*;
 import io.minio.errors.*;
-import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,21 +10,17 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-@ApplicationScoped
 public class CivoObjectStorage {
-    private MinioClient minio;
-    private String bucket;
+    private final MinioClient minio;
+    private final String bucket;
 
     public static final String ENDPOINT_FRA_1 = "https://objectstore.fra1.civo.com";
 
-    public CivoObjectStorage() {
-    }
-
     public CivoObjectStorage(
-            @ConfigProperty(name = "storage.civo.endpoint") String endpoint,
-            @ConfigProperty(name = "storage.civo.access-key") String accessKey,
-            @ConfigProperty(name = "storage.civo.secret-key") String secretKey,
-            @ConfigProperty(name = "storage.civo.bucket") String bucket
+            String endpoint,
+            String accessKey,
+            String secretKey,
+            String bucket
     ) {
         this.minio = MinioClient.builder()
                 .endpoint(endpoint)
