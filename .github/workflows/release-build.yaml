@@ -1,0 +1,41 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        required: true
+        default: PATCH
+        type: choice
+        description: >
+          Gibt an, welche Stelle die Versionsnummer hochgezählt werden soll.
+          MAJOR wird erhöht, wenn inkompatible Änderungen veröffentlicht werden,
+          MINOR wird erhöht, wenn neue Funktionalitäten veröffentlicht werden,
+          PATCH wird erhöht, wenn die Änderungen ausschließlich Bugfixes umfassen.
+        options:
+          - MAJOR
+          - MINOR
+          - PATCH
+
+jobs:
+  maven-build:
+    name: Maven Build and Push To Repository
+    uses: marcelrgberger/org-ci-config/.github/workflows/maven-build.yaml@main
+    with:
+      branch: ${{ github.ref_name }}
+      repository: ${{ github.repository }}
+      java_version: 21
+      maven_version: ${{inputs.release_version}}
+    secrets:
+      deploy_github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
+
+  docker-build:
+    name: Docker Build and Push To Repository
+    needs: [ maven-build ]
+    uses: marcelrgberger/org-ci-config/.github/workflows/docker-build.yaml@main
+    with:
+      release: true
+      cache-key: ${{ needs.maven-build.outputs.cache-key }}
+    secrets:
+      registry_username: ${{ github.actor }}
+      registry_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}

@@ -1,0 +1,26 @@
+version: 2
+registries:
+  internal-maven-repo:
+    type: maven-repository
+    url: https://maven.pkg.github.com/marcelrgberger/internal-maven-repo
+    username: ${{secrets.DEPENDABOT_MAVEN_USER}}
+    password: ${{secrets.DEPENDABOT_MAVEN_PASSWORD}}
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"  
+    registries: "*"
+    schedule:
+      interval: "daily"      # Alternativen: "weekly", "monthly"
+    open-pull-requests-limit: 10
+    target-branch: "development"
+    assignees:
+      - marcelrgberger
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    target-branch: "development"
+    assignees:
+      - marcelrgberger
